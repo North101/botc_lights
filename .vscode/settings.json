@@ -1,0 +1,19 @@
+{
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingModuleSource": "none"
+    },
+    "python.analysis.extraPaths": [
+        "/opt/homebrew/lib/python3.10/site-packages",
+        "/Users/alexander/git/pimoroni-pico-stubs"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none",
+    "editor.formatOnSave": true,
+    "files.autoSave": "afterDelay",
+}
