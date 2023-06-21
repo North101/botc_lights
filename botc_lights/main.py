@@ -1,4 +1,4 @@
-import bluetooth
+import ubluetooth as bluetooth
 import utime as time
 from machine import Pin
 
@@ -13,10 +13,12 @@ def start():
 
     def on_rx(v):
         unpack_player_state(v)
-        game.update()
 
-    ble_peripheral = BLEPeripheral(bluetooth.BLE(), name='BotC Lights')
-    ble_peripheral.on_write(on_rx)
+    ble_peripheral = BLEPeripheral(
+        bluetooth.BLE(),
+        name='BotC Lights',
+        rx_callback=on_rx,
+    )
 
     while True:
         if not ble_peripheral.is_connected():
@@ -24,6 +26,7 @@ def start():
             time.sleep(1)
         else:
             led.off()
+        game.update()
 
 if __name__ == '__main__':
     start()

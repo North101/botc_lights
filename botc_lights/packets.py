@@ -1,5 +1,6 @@
-import socket
 from typing import Tuple, TypeAlias
+
+import usocket as socket
 
 from botc_lights.players import MAX_PLAYER_COUNT, PlayerState
 

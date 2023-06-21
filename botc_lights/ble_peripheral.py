@@ -1,6 +1,4 @@
-# This example demonstrates a UART periperhal.
-
-import bluetooth
+import ubluetooth as bluetooth
 from micropython import const
 
 from botc_lights.ble_advertising import advertising_payload
@@ -14,13 +12,13 @@ _FLAG_WRITE_NO_RESPONSE = const(0x0004)
 _FLAG_WRITE = const(0x0008)
 _FLAG_NOTIFY = const(0x0010)
 
-_UART_UUID = bluetooth.UUID('6E400001-B5A3-F393-E0A9-E50E24DCCA9E')
+_UART_UUID = bluetooth.UUID('AAD80980-48AC-4763-8848-513873A69E15')
 _UART_TX = (
-    bluetooth.UUID('6E400003-B5A3-F393-E0A9-E50E24DCCA9E'),
+    bluetooth.UUID('AAD80982-48AC-4763-8848-513873A69E15'),
     _FLAG_READ | _FLAG_NOTIFY,
 )
 _UART_RX = (
-    bluetooth.UUID('6E400002-B5A3-F393-E0A9-E50E24DCCA9E'),
+    bluetooth.UUID('AAD80981-48AC-4763-8848-513873A69E15'),
     _FLAG_WRITE | _FLAG_WRITE_NO_RESPONSE,
 )
 _UART_SERVICE = (
@@ -30,13 +28,13 @@ _UART_SERVICE = (
 
 
 class BLEPeripheral:
-    def __init__(self, ble: bluetooth.BLE, name=None):
+    def __init__(self, ble: bluetooth.BLE, name=None, rx_callback=None):
         self._ble = ble
         self._ble.active(True)
         self._ble.irq(self._irq)
         ((self._handle_tx, self._handle_rx),) = self._ble.gatts_register_services((_UART_SERVICE,))
         self._connections = set()
-        self._write_callback = None
+        self._rx_callback = rx_callback
         self._adv_data = advertising_payload(services=[_UART_UUID])
         self._resp_data = advertising_payload(name=name)
         self._advertise()
@@ -56,8 +54,8 @@ class BLEPeripheral:
         elif event == _IRQ_GATTS_WRITE:
             conn_handle, value_handle = data
             value = self._ble.gatts_read(value_handle)
-            if value_handle == self._handle_rx and self._write_callback:
-                self._write_callback(value)
+            if value_handle == self._handle_rx and self._rx_callback:
+                self._rx_callback(value)
 
     def send(self, data):
         for conn_handle in self._connections:
@@ -69,6 +67,3 @@ class BLEPeripheral:
     def _advertise(self, interval_us=50000):
         print('Starting advertising')
         self._ble.gap_advertise(interval_us, adv_data=self._adv_data, resp_data=self._resp_data)
-
-    def on_write(self, callback):
-        self._write_callback = callback

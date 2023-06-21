@@ -1,16 +1,13 @@
 # Helpers for generating BLE advertising payloads.
 
-import struct
-
-import bluetooth
+import ubluetooth as bluetooth
+import ustruct as struct
 from micropython import const
 
 # Advertising payloads are repeated packets of the following form:
 #   1 byte data length (N + 1)
 #   1 byte type (see constants below)
 #   N bytes type-specific data
-
-_MAX_PAYLOAD = const(31)
 
 _ADV_TYPE_FLAGS = const(0x01)
 _ADV_TYPE_NAME = const(0x09)
@@ -21,6 +18,8 @@ _ADV_TYPE_UUID16_MORE = const(0x2)
 _ADV_TYPE_UUID32_MORE = const(0x4)
 _ADV_TYPE_UUID128_MORE = const(0x6)
 _ADV_TYPE_APPEARANCE = const(0x19)
+
+_ADV_MAX_PAYLOAD = const(31)
 
 def _pack(adv_type, value):
     return struct.pack('BB', len(value) + 1, adv_type) + value
@@ -52,8 +51,8 @@ def advertising_payload(limited_disc=False, br_edr=False, name=None, services=No
     if appearance:
         payload += _pack(_ADV_TYPE_APPEARANCE, struct.pack("<h", appearance))
 
-    if len(payload) > _MAX_PAYLOAD:
-        raise ValueError(f'ADV payload too large. Excpected {_MAX_PAYLOAD} got {len(payload)}')
+    if len(payload) > _ADV_MAX_PAYLOAD:
+        raise ValueError(f'ADV payload too large. Max {_ADV_MAX_PAYLOAD} got {len(payload)}')
     return payload
 
 
@@ -69,7 +68,6 @@ def decode_field(payload, adv_type):
 
 def decode_name(payload):
     n = decode_field(payload, _ADV_TYPE_NAME)
-    print(n)
     return str(n[0], "utf-8") if n else ""
 
 
