@@ -27,10 +27,6 @@
     [
       "botc_lights/main.py",
       "github:North101/botc_lights/botc_lights/main.py"
-    ],
-    [
-      "botc_lights/packets.py",
-      "github:North101/botc_lights/botc_lights/packets.py"
     ]
   ]
 }

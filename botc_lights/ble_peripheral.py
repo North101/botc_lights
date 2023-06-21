@@ -12,18 +12,18 @@ _FLAG_WRITE_NO_RESPONSE = const(0x0004)
 _FLAG_WRITE = const(0x0008)
 _FLAG_NOTIFY = const(0x0010)
 
-_UART_UUID = bluetooth.UUID('AAD80980-48AC-4763-8848-513873A69E15')
-_UART_TX = (
+_SERVICE_UUID = bluetooth.UUID('AAD80980-48AC-4763-8848-513873A69E15')
+_SERVICE_TX_UUID = (
     bluetooth.UUID('AAD80982-48AC-4763-8848-513873A69E15'),
     _FLAG_READ | _FLAG_NOTIFY,
 )
-_UART_RX = (
+_SERVICE_RX_UUID = (
     bluetooth.UUID('AAD80981-48AC-4763-8848-513873A69E15'),
     _FLAG_WRITE | _FLAG_WRITE_NO_RESPONSE,
 )
-_UART_SERVICE = (
-    _UART_UUID,
-    (_UART_TX, _UART_RX),
+_SERVICE = (
+    _SERVICE_UUID,
+    (_SERVICE_TX_UUID, _SERVICE_RX_UUID),
 )
 
 
@@ -32,10 +32,10 @@ class BLEPeripheral:
         self._ble = ble
         self._ble.active(True)
         self._ble.irq(self._irq)
-        ((self._handle_tx, self._handle_rx),) = self._ble.gatts_register_services((_UART_SERVICE,))
+        ((self._handle_tx, self._handle_rx),) = self._ble.gatts_register_services((_SERVICE,))
         self._connections = set()
         self._rx_callback = rx_callback
-        self._adv_data = advertising_payload(services=[_UART_UUID])
+        self._adv_data = advertising_payload(services=[_SERVICE_UUID])
         self._resp_data = advertising_payload(name=name)
         self._advertise()
 

@@ -17,10 +17,3 @@ TYPE_STATE = [
   TYPE_STATE_PLAYER,
   TYPE_STATE_TRAVELLER,
 ]
-
-class PlayerState:
-  nominated_player = -1
-  players: list[tuple[int, int]] = [
-    (ALIVE_STATE_HIDDEN, TYPE_STATE_PLAYER)
-    for _ in range(MAX_PLAYER_COUNT)
-  ]
