@@ -1,5 +1,3 @@
-from typing import List, Tuple
-
 MAX_PLAYER_COUNT = 20
 
 ALIVE_STATE_HIDDEN = 0
@@ -22,7 +20,7 @@ TYPE_STATE = [
 
 class PlayerState:
   nominated_player = -1
-  players: List[Tuple[int, int]] = [
+  players: list[tuple[int, int]] = [
     (ALIVE_STATE_HIDDEN, TYPE_STATE_PLAYER)
     for _ in range(MAX_PLAYER_COUNT)
   ]

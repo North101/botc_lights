@@ -1,46 +1,36 @@
 {
   "name": "botc_lights",
   "version": "0.1",
-  "repository": "file:.",
+  "repository": "github:North101/botc_lights",
   "exclude": [
     "tools/*",
-    "client.py",
     "main.py"
   ],
-  "deps": [
-    [
-      "github:North101/micropython-typing",
-      "master"
-    ]
-  ],
+  "deps": [],
   "urls": [
     [
       "botc_lights/game.py",
-      "file:./botc_lights/game.py"
+      "github:North101/botc_lights/botc_lights/game.py"
     ],
     [
       "botc_lights/ble_peripheral.py",
-      "file:./botc_lights/ble_peripheral.py"
+      "github:North101/botc_lights/botc_lights/ble_peripheral.py"
     ],
     [
       "botc_lights/ble_advertising.py",
-      "file:./botc_lights/ble_advertising.py"
+      "github:North101/botc_lights/botc_lights/ble_advertising.py"
     ],
     [
       "botc_lights/players.py",
-      "file:./botc_lights/players.py"
-    ],
-    [
-      "botc_lights/poll.py",
-      "file:./botc_lights/poll.py"
+      "github:North101/botc_lights/botc_lights/players.py"
     ],
     [
       "botc_lights/main.py",
-      "file:./botc_lights/main.py"
+      "github:North101/botc_lights/botc_lights/main.py"
     ],
     [
       "botc_lights/packets.py",
-      "file:./botc_lights/packets.py"
+      "github:North101/botc_lights/botc_lights/packets.py"
     ]
   ]
 }
