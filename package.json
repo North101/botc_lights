@@ -3,11 +3,18 @@
   "version": "0.1",
   "repository": "github:North101/botc_lights",
   "exclude": [
-    "tools/*",
-    "main.py"
+    "tools/*"
   ],
   "deps": [],
   "urls": [
+    [
+      "config.py",
+      "github:North101/botc_lights/config.py"
+    ],
+    [
+      "main.py",
+      "github:North101/botc_lights/main.py"
+    ],
     [
       "botc_lights/game.py",
       "github:North101/botc_lights/botc_lights/game.py"
@@ -23,10 +30,6 @@
     [
       "botc_lights/players.py",
       "github:North101/botc_lights/botc_lights/players.py"
-    ],
-    [
-      "botc_lights/main.py",
-      "github:North101/botc_lights/botc_lights/main.py"
     ]
   ]
 }

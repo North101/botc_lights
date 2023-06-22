@@ -45,9 +45,7 @@ The device id would be `e6614c311b893a25` in this example
 
 3. Install the code onto the Plasma Stick 2040 W
 ```console
-$ mpremote connect id:e6614c311b893a25 mip install github:North101/botc_lights
-
-$ mpremote connect id:e6614c311b893a25 mip install --target ./ github:North101/botc_lights/main.py
+$ mpremote connect id:e6614c311b893a25 mip install --target ./ github:North101/botc_lights
 ```
 
 # Install App #

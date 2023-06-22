@@ -12,7 +12,6 @@ from botc_lights.players import (
     TYPE_STATE_TRAVELLER,
 )
 
-NUM_LEDS = 50
 COLOR_PLAYER_ALIVE    = (160, 160, 160)
 COLOR_TRAVELLER_ALIVE = (255, 239, 59)
 COLOR_DEAD_VOTE       = (224, 64, 251)
@@ -20,8 +19,11 @@ COLOR_DEAD_NO_VOTE    = (255, 82, 82)
 COLOR_HIDDEN          = (000, 000, 000)
 
 class Game:
-  def __init__(self):
-    self.led_strip = plasma.WS2812(NUM_LEDS, 0, 0, plasma_stick.DAT, color_order=plasma.COLOR_ORDER_RGB)
+  def __init__(self, num_leds: int, reverse_leds: bool):
+    self.num_leds = num_leds
+    self.reverse_leds = reverse_leds
+
+    self.led_strip = plasma.WS2812(num_leds, 0, 0, plasma_stick.DAT, color_order=plasma.COLOR_ORDER_RGB)
     self.led_strip.start()
 
     self.nominated_player = -1
@@ -30,7 +32,7 @@ class Game:
       for _ in range(MAX_PLAYER_COUNT)
     ]
   
-  def pack_player_state(self):
+  def pack_data(self):
     data = (self.nominated_player + 1) & 0b11111
     for (alive_state, type_state) in reversed(self.players):
       data <<= 1
@@ -39,7 +41,7 @@ class Game:
       data |= alive_state & 0b11
     return data.to_bytes(length=65, byteorder='little')
 
-  def unpack_player_state(self, data):
+  def unpack_data(self, data):
     data = int.from_bytes(data, 'little')
     for i in range(len(self.players)):
       alive_state = data & 0b11
@@ -66,4 +68,5 @@ class Game:
       else:
         value = COLOR_HIDDEN
 
-      self.led_strip.set_rgb(NUM_LEDS - 1 - i, *value)
+      led_index = self.num_leds - 1 - i if self.reverse_leds else i
+      self.led_strip.set_rgb(led_index, *value)

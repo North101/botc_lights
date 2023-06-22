@@ -1,0 +1,2 @@
+NUM_LEDS = 50
+REVERSE_LEDS = True
