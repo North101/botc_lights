@@ -16,16 +16,12 @@
       "github:North101/botc_lights/main.py"
     ],
     [
+      "botc_lights/ble.py",
+      "github:North101/botc_lights/botc_lights/ble.py"
+    ],
+    [
       "botc_lights/game.py",
       "github:North101/botc_lights/botc_lights/game.py"
-    ],
-    [
-      "botc_lights/ble_peripheral.py",
-      "github:North101/botc_lights/botc_lights/ble_peripheral.py"
-    ],
-    [
-      "botc_lights/ble_advertising.py",
-      "github:North101/botc_lights/botc_lights/ble_advertising.py"
     ],
     [
       "botc_lights/players.py",
