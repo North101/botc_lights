@@ -5,6 +5,7 @@ from aioble.device import DeviceConnection
 
 import config
 from botc_lights.ble import (
+    BRIGHTNESS_CHARACTERISTIC,
     PLAYER_LIVING_CHARACTERISTIC,
     PLAYER_NOMINATED_CHARACTERISTIC,
     PLAYER_TEAM_CHARACTERISTIC,
@@ -48,6 +49,7 @@ class GameBLE:
       self.on_characteristic(PLAYER_TYPE_CHARACTERISTIC, self.on_player_type),
       self.on_characteristic(PLAYER_TEAM_CHARACTERISTIC, self.on_player_team),
       self.on_characteristic(PLAYER_NOMINATED_CHARACTERISTIC, self.on_player_nominated),
+      self.on_characteristic(BRIGHTNESS_CHARACTERISTIC, self.on_brightness),
     ))
 
   def on_disconnect(self):
@@ -92,6 +94,10 @@ class GameBLE:
     if nominated_player < 0:
       nominated_player = None
     self.game.nominated_player = nominated_player
+
+  def on_brightness(self, data: bytes):
+    brightness = int.from_bytes(data, 'little')
+    self.game.brightness = brightness / 255
 
 
 async def advertise_loop(game_ble: GameBLE):
