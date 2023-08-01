@@ -13,7 +13,7 @@ from botc_lights.players import (
     TEAM_STATE_EVIL,
     TEAM_STATE_GOOD,
     TEAM_STATE_HIDDEN,
-    TYPE_STATE_PLAYER,
+    TYPE_STATE_CHARACTER,
     TYPE_STATE_TRAVELLER,
 )
 
@@ -41,7 +41,7 @@ class Game:
     self.state_changed = time.ticks_ms()
     self.nominated_player: int|None = None
     self.players: list[tuple[int, int, int]] = [
-      (LIVING_STATE_HIDDEN, TYPE_STATE_PLAYER, TEAM_STATE_HIDDEN)
+      (LIVING_STATE_HIDDEN, TYPE_STATE_CHARACTER, TEAM_STATE_HIDDEN)
       for _ in range(MAX_PLAYER_COUNT)
     ]
 

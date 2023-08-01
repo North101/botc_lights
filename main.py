@@ -97,7 +97,7 @@ class GameBLE:
 
   def on_brightness(self, data: bytes):
     brightness = int.from_bytes(data, 'little')
-    self.game.brightness = brightness / 255
+    self.game.brightness = max(min(brightness, 100), 0) / 100
 
 
 async def advertise_loop(game_ble: GameBLE):
