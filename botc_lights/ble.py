@@ -45,4 +45,11 @@ BRIGHTNESS_CHARACTERISTIC = aioble.Characteristic(
   write_no_response=True,
   capture=True,
 )
+COLORS_CHARACTERISTIC = aioble.Characteristic(
+  SERVICE,
+  bluetooth.UUID('AAD80987-48AC-4763-8848-513873A69E15'),
+  write=True,
+  write_no_response=True,
+  capture=True,
+)
 aioble.register_services(SERVICE)

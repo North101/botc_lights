@@ -1,11 +1,13 @@
 import aioble
 import uasyncio as asyncio
+import ustruct as struct
 import utime as time
 from aioble.device import DeviceConnection
 
 import config
 from botc_lights.ble import (
     BRIGHTNESS_CHARACTERISTIC,
+    COLORS_CHARACTERISTIC,
     PLAYER_LIVING_CHARACTERISTIC,
     PLAYER_NOMINATED_CHARACTERISTIC,
     PLAYER_TEAM_CHARACTERISTIC,
@@ -13,6 +15,7 @@ from botc_lights.ble import (
     SERVICE,
     STATE_CHARACTERISTIC,
 )
+from botc_lights.constants import PLAYER_COLORS
 from botc_lights.game import Game
 
 # How frequently to send advertising beacons.
@@ -38,7 +41,7 @@ class GameBLE:
     async with connection:
       self.on_connect(connection)
 
-      await connection.disconnected()
+      await connection.disconnected(None)
       self.on_disconnect()
 
   def on_connect(self, connection: DeviceConnection):
@@ -50,6 +53,7 @@ class GameBLE:
       self.on_characteristic(PLAYER_TEAM_CHARACTERISTIC, self.on_player_team),
       self.on_characteristic(PLAYER_NOMINATED_CHARACTERISTIC, self.on_player_nominated),
       self.on_characteristic(BRIGHTNESS_CHARACTERISTIC, self.on_brightness),
+      self.on_characteristic(COLORS_CHARACTERISTIC, self.on_colors),
     ))
 
   def on_disconnect(self):
@@ -98,6 +102,13 @@ class GameBLE:
   def on_brightness(self, data: bytes):
     brightness = int.from_bytes(data, 'little')
     self.game.brightness = max(min(brightness, 100), 0) / 100
+
+  def on_colors(self, data: bytes):
+    size = struct.calcsize('BBB')
+    self.game.colors = {
+      i: struct.unpack_from('BBB', data, size * i)
+      for i in PLAYER_COLORS.keys()
+    }
 
 
 async def advertise_loop(game_ble: GameBLE):

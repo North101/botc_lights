@@ -4,12 +4,20 @@ import plasma
 import utime as time
 from plasma import plasma_stick
 
-from botc_lights.players import (
+from botc_lights.constants import (
+    COLOR_WHITE,
     GAME_STATE_GAME,
     LIVING_STATE_ALIVE,
     LIVING_STATE_DEAD,
     LIVING_STATE_HIDDEN,
     MAX_PLAYER_COUNT,
+    PLAYER_COLOR_CHARACTER,
+    PLAYER_COLOR_DEAD,
+    PLAYER_COLOR_EVIL,
+    PLAYER_COLOR_GOOD,
+    PLAYER_COLOR_HIDDEN,
+    PLAYER_COLOR_TRAVELLER,
+    PLAYER_COLORS,
     TEAM_STATE_EVIL,
     TEAM_STATE_GOOD,
     TEAM_STATE_HIDDEN,
@@ -17,14 +25,6 @@ from botc_lights.players import (
     TYPE_STATE_TRAVELLER,
 )
 
-COLOR_HIDDEN                 = (0.000, 0.000)
-
-COLOR_LIVING_ALIVE_PLAYER    = (0.000, 0.000)
-COLOR_LIVING_ALIVE_TRAVELLER = (0.153, 0.769)
-COLOR_LIVING_DEAD            = (0.808, 0.745)
-
-COLOR_TEAM_GOOD              = (0.570, 0.680)
-COLOR_TEAM_EVIL              = (0.000, 0.790)
 
 class Game:
   def __init__(self, num_leds: int, reverse_leds: bool, brightness: float, nomination_speed_ms: int, reveal_speed_ms: int):
@@ -44,12 +44,14 @@ class Game:
       (LIVING_STATE_HIDDEN, TYPE_STATE_CHARACTER, TEAM_STATE_HIDDEN)
       for _ in range(MAX_PLAYER_COUNT)
     ]
+    self.colors: dict[int, tuple[int, int, int]] = PLAYER_COLORS
 
   def led_index(self, i: int):
     return self.num_leds - 1 - i if self.reverse_leds else i
 
-  def set_led(self, i: int, h: float, s: float, v: float):
-    self.led_strip.set_hsv(self.led_index(i), h, s, self.brightness * v)
+  def set_led(self, i: int, r: int, g: int, b: int, brightness: float = 1.0):
+    brightness = brightness * self.brightness
+    self.led_strip.set_rgb(self.led_index(i), int(r * brightness), int(g * brightness), int(b * brightness))
 
   def flicker(self, percent: float):
     v_flicker = (percent % 1.0) * 2.0
@@ -72,16 +74,15 @@ class Game:
 
       if living_state == LIVING_STATE_ALIVE:
         if type_state == TYPE_STATE_TRAVELLER:
-          h, s = COLOR_LIVING_ALIVE_TRAVELLER
+          color = self.colors[PLAYER_COLOR_TRAVELLER]
         else:
-          h, s = COLOR_LIVING_ALIVE_PLAYER
+          color = self.colors[PLAYER_COLOR_CHARACTER]
       elif living_state == LIVING_STATE_DEAD:
-        h, s = COLOR_LIVING_DEAD
+        color = self.colors[PLAYER_COLOR_DEAD]
       else:
-        h, s = COLOR_HIDDEN
-        v = 0.0
+        color = self.colors[PLAYER_COLOR_HIDDEN]
 
-      self.set_led(i, h, s, v)
+      self.set_led(i, *color, v)
 
   def update_reveal(self):
     all_hidden = all(team_state == TEAM_STATE_HIDDEN for _, _, team_state in self.players)
@@ -94,16 +95,14 @@ class Game:
         else:
           v = 0.0
 
-        self.set_led(i, 0, 0, v)
+        self.set_led(i, *COLOR_WHITE, v)
     else:
       for i, (_, _, team_state) in enumerate(self.players):
-        v = 1.0
         if team_state == TEAM_STATE_GOOD:
-          h, s = COLOR_TEAM_GOOD
+          color = self.colors[PLAYER_COLOR_GOOD]
         elif team_state == TEAM_STATE_EVIL:
-          h, s = COLOR_TEAM_EVIL
+          color = self.colors[PLAYER_COLOR_EVIL]
         else:
-          h, s = COLOR_HIDDEN
-          v = 0.0
+          color = self.colors[PLAYER_COLOR_HIDDEN]
 
-        self.set_led(i, h, s, v)
+        self.set_led(i, *color)
